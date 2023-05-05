@@ -1,0 +1,58 @@
+With sql, create the following tables:
+
+application
+id (int, primary key, autoincrement)
+position_id (int, foreign key points to id column of table position)
+domain_id (int, foreign key points to id column of table domain)
+found_in (int, foreign key points to id column of table website)
+country_id (int, foreign key points to id column of table country)
+is_remote (boolean)
+
+application_vs_status
+application_id (int, foreign key points to id column of table application)
+status_id (int, foreign key points to id column of table status)
+date (date)
+next_date (date, can be null)
+both application_id and status_id are a primary key
+
+status:
+id (int, primary key, autoincrement)
+name (varchar 8, 3 possible values: "Applied", "Rejected", "Interview", "Accepted")
+
+domain:
+id (int, primary key, autoincrement)
+name (varchar 30)
+
+position:
+id (int, primary key, autoincrement)
+company_id (int, foreign key points to id column of table company)
+name (varchar 30)
+
+company:
+id (int, primary key, autoincrement)
+name (varchar 30)
+size (varchar 8, 3 values: "Startup", "Medium", "Big", "FAANG")
+website_id (int, foreign key points to id column of table website)
+
+company_review:
+id (int, primary key, autoincrement)
+rating (int 1, range from 1 to 5)
+description (varchar 100)
+company_id (int, foreign key points to id column of table company)
+
+contact:
+id (int, primary key, autoincrement)
+name (varchar 30)
+phone (int)
+company_id (int, foreign key points to id column of table company)
+
+website:
+id (int, primary key, autoincrement)
+name (varchar 50)
+job_platform (boolean, defaults to 0)
+
+country:
+id (int, primary key, autoincrement)
+name (varchar 30)
+
+project:
