@@ -1,4 +1,4 @@
-With sql, create the following tables:
+wageracer <<<<<
 
 application
 id (int, primary key, autoincrement)
@@ -13,7 +13,7 @@ application_id (int, foreign key points to id column of table application)
 status_id (int, foreign key points to id column of table status)
 date (date)
 next_date (date, can be null)
-both application_id and status_id are a primary key
+both application_id and status_id are a single primary key
 
 status:
 id (int, primary key, autoincrement)
@@ -55,4 +55,29 @@ country:
 id (int, primary key, autoincrement)
 name (varchar 30)
 
+projects_api <<<<<
+
 project:
+id (int, primary key, autoincrement)
+description (varchar 400)
+features (varchar 400)
+demo (varchar 200, can be null)
+installation (varchar 400)
+usage (varchar 400)
+challenges (varchar 400)
+future_work (varchar 400)
+credits (varchar 200)
+
+tech_used:
+project_id (int, foreign key points to id column of table project)
+tech_id (int, foreign key points to id column of table tech)
+both project_id and tech_id are a single primary key
+
+picture:
+id (int, primary key, autoincrement)
+location (varchar, 200)
+project_id (int, foreign key points to id column of table project)
+
+tech
+id (int, primary key, autoincrement)
+name (varchar 30)
