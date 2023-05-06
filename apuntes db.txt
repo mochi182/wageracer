@@ -2,7 +2,7 @@ wageracer <<<<<
 
 application
 id (int, primary key, autoincrement)
-position_id (int, foreign key points to id column of table position)
+job_position_id (int, foreign key points to id column of table position)
 domain_id (int, foreign key points to id column of table domain)
 found_in (int, foreign key points to id column of table website)
 country_id (int, foreign key points to id column of table country)
@@ -23,7 +23,7 @@ domain:
 id (int, primary key, autoincrement)
 name (varchar 30)
 
-position:
+job_position:
 id (int, primary key, autoincrement)
 company_id (int, foreign key points to id column of table company)
 name (varchar 30)
@@ -55,7 +55,15 @@ country:
 id (int, primary key, autoincrement)
 name (varchar 30)
 
-projects_api <<<<<
+project:
+federated table (?)
+
+application_vs_project:
+application_id (int, foreign key points to id column of table application)
+status_id (int, foreign key points to id column of table project)
+both application_id and status_id are a single primary key
+
+projects <<<<<
 
 project:
 id (int, primary key, autoincrement)
@@ -63,7 +71,7 @@ description (varchar 400)
 features (varchar 400)
 demo (varchar 200, can be null)
 installation (varchar 400)
-usage (varchar 400)
+guide (varchar 400)
 challenges (varchar 400)
 future_work (varchar 400)
 credits (varchar 200)
