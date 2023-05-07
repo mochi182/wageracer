@@ -1,0 +1,20 @@
+body {
+    margin: 0px;
+    height: 100vh;
+}
+
+main {
+    background-color: pink;
+    height: calc(100% - 85px);
+}
+
+header {
+    border-bottom: 5px solid rgb(220, 220, 220);
+}
+
+footer {
+}
+
+#nav > * {
+    margin-left: 10px;
+}
