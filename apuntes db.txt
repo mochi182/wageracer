@@ -58,10 +58,10 @@ name (varchar 30)
 project:
 federated table (?)
 
-application_vs_project:
-application_id (int, foreign key points to id column of table application)
-status_id (int, foreign key points to id column of table project)
-both application_id and status_id are a single primary key
+project_vs_company:
+project_id (int, foreign key points to id column of table project)
+company_id (int, foreign key points to id column of table company)
+both project_id and company_id are a single primary key
 
 projects <<<<<
 
