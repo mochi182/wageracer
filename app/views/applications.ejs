@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('head'); %>
+<body>
+
+    <%- include('header'); %>
+
+    <main class="p-4">
+        <h3>Applications:</h3>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Job position</th>
+                    <th>Domain</th>
+                    <th>Found In</th>
+                    <th>Country</th>
+                    <th>Is remote?</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th>Next date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% applications.forEach(function(app) { %>
+                    <tr>
+                        <td><a href="/application/<%= app.application_id %>"><%= app.application_id %></a></td>
+                        <td><%= app.job_position_name %></td>
+                        <td><%= app.domain_name %></td>
+                        <td><%= app.website_name %></td>
+                        <td><%= app.country_name %></td>
+                        <td><%= app.is_remote ? 'Yes' : 'No' %></td>
+                        <td><%= app.status_name %></td>
+                        <td><%= app.date %></td>
+                        <td><%= app.next_date ? app.next_date : '' %></td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </main>
+
+    <%- include('footer'); %>
+
+</body>
+</html>

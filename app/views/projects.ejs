@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('head'); %>
+
+<body>
+
+<%- include('header'); %>
+
+<main class="p-4">
+    <h3>Projects:</h3>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Description</th>
+                <th>Features</th>
+                <th>Demo</th>
+                <th>Installation</th>
+                <th>Guide</th>
+                <th>Challenges</th>
+                <th>Future work</th>
+                <th>Credits</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% projects.forEach(project => { %>
+                <tr>
+                    <td><%= project.id %></td>
+                    <td><%= project.description %></td>
+                    <td><%= project.features %></td>
+                    <td><%= project.demo %></td>
+                    <td><%= project.installation %></td>
+                    <td><%= project.guide %></td>
+                    <td><%= project.challenges %></td>
+                    <td><%= project.future_work %></td>
+                    <td><%= project.credits %></td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</main>
+
+<%- include('footer'); %>
+
+</body>
+
+</html>

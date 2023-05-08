@@ -1,12 +1,26 @@
-const applicationRoutes = require('./applicationRoutes');
-const companyRoutes = require('./companyRoutes');
+const applicationsRoutes = require('./applicationsRoutes');
+const companiesRoutes = require('./companiesRoutes');
+const projectsRoutes = require('./projectsRoutes');
 
 exports.routes = function (app) {
 
-    // Application
-    app.use('/application', applicationRoutes)
+    // Applications
+    app.use('/applications', applicationsRoutes)
 
-    // Company
-    //app.use('/company', companyRoutes)
+    // Companies
+    app.use('/companies', companiesRoutes)
+
+    // Projects
+    app.use('/projects', projectsRoutes)
+
+    // Data
+    app.use('/data', (req, res, next) => {
+        res.render('data');
+    })
+
+    // About
+    app.get('/about', (req, res, next) => {
+        res.render('about');
+    })
 
 };

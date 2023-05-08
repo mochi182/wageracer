@@ -1,6 +1,6 @@
 'use strict';
 
-let model = require('../models/companyModel.js');
+let model = require('../models/companiesModel.js');
 
 exports.create = async function (req, res) {
     try {
@@ -13,7 +13,7 @@ exports.create = async function (req, res) {
 
 exports.readAll = async function (req, res) {
     try {
-        res.render('index', {companies: await model.readAll()})
+        res.render('companies', {companies: await model.readAll()})
     } catch(err) {
         res.json({"Error": err})
     }

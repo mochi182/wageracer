@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('head'); %>
+
+<body>
+
+<%- include('header'); %>
+
+<main class="p-4">
+    <h3>Companies:</h3>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Website</th>
+                <th>Reviews</th>
+                <th>Contacts</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% companies.forEach(function(company) { %>
+                <tr>
+                    <td>
+                        <%= company.id %>
+                    </td>
+                    <td>
+                        <%= company.name %>
+                    </td>
+                    <td>
+                        <%= company.website_name %>
+                    </td>
+                    <td>
+                        <ul>
+                            <% company.reviews.forEach(function(review) { %>
+                                <li>
+                                    <%= review.rating %>, <%= review.description %>
+                                </li>
+                                <% }); %>
+                        </ul>
+                    </td>
+                    <td>
+                        <ul>
+                            <% company.contacts.forEach(function(contact) { %>
+                                <li>
+                                    <%= contact.name %>, <%= contact.phone %>
+                                </li>
+                                <% }); %>
+                        </ul>
+                    </td>
+                </tr>
+                <% }); %>
+        </tbody>
+    </table>
+</main>
+
+<%- include('footer'); %>
+
+</body>
+
+</html>
