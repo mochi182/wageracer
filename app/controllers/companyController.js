@@ -1,11 +1,11 @@
 'use strict';
 
-let model = require('../models/appModel.js');
+let model = require('../models/companyModel.js');
 
 exports.create = async function (req, res) {
     try {
         //await model.create(req.body);
-        //res.redirect('/applications');
+        //res.redirect('/companies');
     } catch (err) {
         res.json({"Error": err});
     }
@@ -13,7 +13,7 @@ exports.create = async function (req, res) {
 
 exports.readAll = async function (req, res) {
     try {
-        res.render('index', {applications: await model.readAll()})
+        res.render('index', {companies: await model.readAll()})
     } catch(err) {
         res.json({"Error": err})
     }
@@ -21,7 +21,7 @@ exports.readAll = async function (req, res) {
 
 exports.read = async function (req, res) {
     try {
-        //res.render('application', {application: await model.read(req.params.id)});
+        //res.render('company', {company: await model.read(req.params.id)});
     } catch (err) {
         res.json({"Error": err});
     }
@@ -30,7 +30,7 @@ exports.read = async function (req, res) {
 exports.update = async function (req, res) {
     try {
         //await model.update(req.params.id, req.body);
-        //res.redirect('/application/' + req.params.id);
+        //res.redirect('/company/' + req.params.id);
     } catch (err) {
         res.json({"Error": err});
     }
@@ -39,7 +39,7 @@ exports.update = async function (req, res) {
 exports.disable = async function (req, res) {
     try {
         //await model.disable(req.params.id);
-        //res.redirect('/applications');
+        //res.redirect('/companies');
     } catch (err) {
         res.json({"Error": err});
     }
