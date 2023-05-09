@@ -1,6 +1,7 @@
 const applicationsRoutes = require('./applicationsRoutes');
 const companiesRoutes = require('./companiesRoutes');
 const projectsRoutes = require('./projectsRoutes');
+const adminRoutes = require('./adminRoutes');
 
 exports.routes = function (app) {
 
@@ -12,6 +13,9 @@ exports.routes = function (app) {
 
     // Projects
     app.use('/projects', projectsRoutes)
+
+    // Admin
+    app.use('/admin', adminRoutes)
 
     // Data
     app.use('/data', (req, res, next) => {

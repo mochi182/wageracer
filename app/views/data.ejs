@@ -7,12 +7,30 @@
 <%- include('header'); %>
 
 <main class="p-4">
-    <h3>Data administration:</h3>
+    <h3>Data</h3>
 
-    <p></p>
+    <div class="form-group">
+        <label for="entity-select">Select Entity:</label>
+        <select class="form-control" id="entity-select">
+            <option value="application">Application</option>
+            <option value="contact">Contact</option>
+            <option value="company">Company</option>
+            <option value="country">Country</option>
+            <option value="domain">Domain</option>
+            <option value="status">Status</option>
+            <option value="website">Website</option>
+        </select>
+    </div>
+
+    <table id="data">
+    </table>
+
+    <button id="create-entity-button" class="btn btn-success d-none">Create</button>
 </main>
 
 <%- include('footer'); %>
 
+<script src="res/js/data.js"></script>
+  
 </body>
 </html>
