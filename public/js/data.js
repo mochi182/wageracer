@@ -172,22 +172,32 @@ function createTFoot(columns) {
                 });
             td.appendChild(select);
         } else {
-            let input = document.createElement("input");
-            if (col.DATA_TYPE.startsWith("int") || col.DATA_TYPE.startsWith("decimal")) {
+            var input;
+            if (col.DATA_TYPE.startsWith("varchar")) {
+                if (col.CHARACTER_MAXIMUM_LENGTH && parseInt(col.CHARACTER_MAXIMUM_LENGTH) > 30) {
+                    input = document.createElement("textarea");
+                    input.classList.add("form-control", "formInput");
+                } else {
+                    input = document.createElement("input");
+                    input.type = "text";
+                }
+                input.classList.add("form-control", "formInput");
+            }  else if (col.DATA_TYPE.startsWith("int") || col.DATA_TYPE.startsWith("decimal")) {
+                input = document.createElement("input");
                 input.classList.add("form-control", "formInput");
                 input.type = "number";
             } else if (col.DATA_TYPE === "date" || col.DATA_TYPE === "datetime") {
+                input = document.createElement("input");
                 input.classList.add("form-control", "formInput");
                 input.type = col.DATA_TYPE;
             } else if (col.DATA_TYPE === "tinyint") {
+                input = document.createElement("input");
                 input.classList.add("form-check-input", "formInput");
                 input.type = "checkbox";
                 input.value = 0;
                 input.addEventListener('change', (e) => { e.target.value = e.target.checked ? 1 : 0 });
-            } else {
-                input.classList.add("form-control", "formInput");
-                input.type = "text";
-            }
+            } 
+
             input.placeholder = col.COLUMN_NAME;
             input.name = col.COLUMN_NAME;
             if (col.IS_NULLABLE !== "YES") {
