@@ -41,7 +41,8 @@ exports.update = async function (req, res) {
 
 exports.delete = async function (req, res) {
     try {
-        res.json({admin: await model.delete()})
+        await model.delete(req);
+        res.sendStatus(200);
     } catch (err) {
         console.log(err);
         res.sendStatus(500);

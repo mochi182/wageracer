@@ -9,7 +9,6 @@ exports.create = async function (req) {
         console.log(formData)
         const columns = Object.keys(formData).join(", ");
         const values = Object.values(formData).map(value => `'${value}'`).join(", ");
-        const values_placeholder = Array(Object.keys(formData).length).fill("?").join(", ");
         const query = `INSERT INTO ${entity} (${columns}) VALUES (${values})`;
         console.log(query)
         const result = await client.promise().query(query);
@@ -60,3 +59,17 @@ exports.getColumns = async function (req) {
         throw err;
     }
 };
+
+exports.delete = async function (req) {
+    try {
+      const entity = req.query.entity;
+      const id = req.params.id;
+      const query = `DELETE FROM ${entity} WHERE id = ${id}`;
+      const result = await client.promise().query(query);
+      return result[0];
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
+  };
+  

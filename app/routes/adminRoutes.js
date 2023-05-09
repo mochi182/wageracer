@@ -31,7 +31,7 @@ router.put('/:id', (req, res) => {
 
 // Disable
 router.delete('/:id', (req, res) => {
-    controller.disable(req, res);
+    controller.delete(req, res);
 });
 
 module.exports = router

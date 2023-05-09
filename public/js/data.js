@@ -71,11 +71,20 @@ function createTHead(columns) {
         th.textContent = col.COLUMN_NAME;
         tr.appendChild(th);
     });
+
+    // Extra th for delete column
+    const th = document.createElement("th");
+    th.textContent = "Delete";
+    tr.appendChild(th);
+
+    // Append row
     thead.appendChild(tr);
     return thead;
 }
 
 function createTBody(columns, rows) {
+    const entity = document.getElementById("entity-select").value;
+
     // Create tbody
     const tbody = document.createElement("tbody");
     if (rows.length > 0) {
@@ -86,13 +95,42 @@ function createTBody(columns, rows) {
                 td.textContent = row[col.COLUMN_NAME];
                 tr.appendChild(td);
             });
+
+            // Create the delete button
+            const deleteBtn = document.createElement("button");
+            deleteBtn.classList.add("badge", "btn", "btn-danger");
+            deleteBtn.textContent = "Del";
+            deleteBtn.addEventListener("click", async () => {
+                const id = row["id"];
+                const confirmDelete = confirm("Are you sure you want to delete this row?");
+                if (confirmDelete) {
+                    try {
+                        const deleteResponse = await fetch(`/admin/${id}?entity=${entity}`, {
+                            method: "DELETE",
+                            headers: { "Content-Type": "application/json" }
+                        });
+                        if (deleteResponse.ok) {
+                            console.log(data);
+                            window.location.href = window.location.pathname + `?entity=${entity}`
+                        } else {
+                            console.log(`Error: ${deleteResponse.status}`);
+                        }
+                    } catch (err) {
+                        console.log(err);
+                    }
+                }
+            });
+            const tdDelete = document.createElement("td");
+            tdDelete.appendChild(deleteBtn);
+            tr.appendChild(tdDelete);
+
             tbody.appendChild(tr);
         });
     } else {
         // Create a single empty row if there are no rows
         const tr = document.createElement("tr");
         const td = document.createElement("td");
-        td.colSpan = columns.length;
+        td.colSpan = columns.length + 1;
         td.textContent = "No data available";
         tr.appendChild(td);
         tbody.appendChild(tr);
@@ -159,6 +197,10 @@ function createTFoot(columns) {
         }
         trFooter.appendChild(td);
     });
+    // Extra td for delete column
+    trFooter.appendChild(document.createElement("td"));
+
+    // Append row
     tfoot.appendChild(trFooter);
     return tfoot;
 }
@@ -196,7 +238,7 @@ function sendData() {
         })
         .then((data) => {
             console.log(data);
-            window.location.href = window.location.pathname + `?entity=${entitySelect.value}`
+            window.location.href = window.location.pathname + `?entity=${entity}`
         })
         .catch((error) => {
             console.error(error);
