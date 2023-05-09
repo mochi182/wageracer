@@ -118,6 +118,15 @@ function createTBody(columns, rows) {
                     const select = document.createElement("select");
                     select.classList.add("form-select", "editInput");
                     select.name = col.COLUMN_NAME;
+
+                    // Add default / null option
+                    const option = document.createElement("option");
+                    option.disabled = true;
+                    option.selected = true;
+                    option.value = "";
+                    select.appendChild(option);
+
+                    // Fetch the options for this select
                     fetch(`/admin?entity=${col.REFERENCED_TABLE_NAME}`)
                         .then((response) => response.json())
                         .then((data) => {
@@ -229,12 +238,16 @@ function createTFoot(columns) {
             const select = document.createElement("select");
             select.classList.add("form-select", "createInput");
             select.name = col.COLUMN_NAME;
+
+            // Add default option
             const option = document.createElement("option");
             option.disabled = true;
             option.selected = true;
             option.textContent = `Select ${col.REFERENCED_TABLE_NAME}`;
             option.value = "";
             select.appendChild(option);
+
+            // Fetch the options for this select
             fetch(`/admin?entity=${col.REFERENCED_TABLE_NAME}`)
                 .then((response) => response.json())
                 .then((data) => {
