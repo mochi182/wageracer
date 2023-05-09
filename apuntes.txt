@@ -3,3 +3,13 @@ Notas:
 Palabras reservadas (MySql):
 Causa problemas con "position" y "usage"...
 https://dev.mysql.com/doc/refman/8.0/en/keywords.html
+
+Problema del footer elevado:
+body {margin: 0px;
+    min-height: 100vh;
+    display: flex;
+    flex-flow: column;}
+main {flex-grow: 1;}
+header {}
+footer {}
+Donde body es el padre de header, main y footer (en ese orden).

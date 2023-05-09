@@ -1,11 +1,13 @@
 body {
     margin: 0px;
-    height: 100vh;
+    min-height: 100vh;
+    display: flex;
+    flex-flow: column;
 }
 
 main {
     background: linear-gradient(0deg, rgba(255,255,255,1) 49%, rgba(255,232,240,1) 95%, rgba(255,211,225,1) 100%);
-    height: calc(100% - 85px);
+    flex-grow: 1;
 }
 
 header {
@@ -17,4 +19,15 @@ footer {
 
 #nav > * {
     margin-left: 10px;
+}
+
+.table td {
+    background-color: white !important;
+    text-align: center;
+}
+
+.table th {
+    color: white;
+    background-color: #212529 !important;
+    text-align: center;
 }

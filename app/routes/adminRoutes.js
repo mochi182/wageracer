@@ -19,11 +19,6 @@ router.get('/get_columns', (req, res) => {
     controller.getColumns(req, res);
 });
 
-// Read
-router.get('/:id', (req, res) => {
-    controller.read(req, res);
-});
-
 // Update
 router.put('/:id', (req, res) => {
     controller.update(req, res);

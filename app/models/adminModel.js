@@ -53,6 +53,8 @@ exports.getColumns = async function (req) {
         AND c.TABLE_SCHEMA = 'wageracer';     
       `;
         const result = await client.promise().query(query);
+        console.log(query)
+        console.log(result[0])
         return result[0];
     } catch (err) {
         console.log(err);

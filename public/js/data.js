@@ -1,7 +1,4 @@
 
-const entitySelect = document.querySelector('#entity-select');
-const table = document.querySelector('table');
-
 window.onload = function () {
     const queryString = window.location.search;
     if (queryString) {
@@ -20,8 +17,10 @@ window.onload = function () {
             console.log("No match found");
         }
     }
+    selectChange();
 };
 
+const entitySelect = document.querySelector('#entity-select');
 entitySelect.addEventListener('change', selectChange);
 
 async function selectChange() {
@@ -44,6 +43,8 @@ async function selectChange() {
     let createButton = document.querySelector("#create-entity-button");
     createButton.classList.remove("d-none");
     createButton.classList.add("d-block");
+
+    document.querySelector("#buttonEntitySpan").innerHTML = entity;
 }
 
 function createTable(columns, rows) {
@@ -65,6 +66,7 @@ function createTable(columns, rows) {
 function createTHead(columns) {
     // Create thead
     const thead = document.createElement("thead");
+    thead.classList.add("thead-dark");
     const tr = document.createElement("tr");
     columns.forEach((col) => {
         const th = document.createElement("th");
@@ -73,9 +75,7 @@ function createTHead(columns) {
     });
 
     // Extra th for delete column
-    const th = document.createElement("th");
-    th.textContent = "Delete";
-    tr.appendChild(th);
+    tr.appendChild(document.createElement("th"));
 
     // Append row
     thead.appendChild(tr);
@@ -99,7 +99,7 @@ function createTBody(columns, rows) {
             // Create the delete button
             const deleteBtn = document.createElement("button");
             deleteBtn.classList.add("badge", "btn", "btn-danger");
-            deleteBtn.textContent = "Del";
+            deleteBtn.textContent = "🗑️";
             deleteBtn.addEventListener("click", async () => {
                 const id = row["id"];
                 const confirmDelete = confirm("Are you sure you want to delete this row?");
@@ -144,56 +144,56 @@ function createTFoot(columns) {
     const trFooter = document.createElement("tr");
     columns.forEach((col) => {
         const td = document.createElement("td");
-        const isId = col.COLUMN_NAME === "id";
+        const isPk = col.CONSTRAINT_NAME === "PRIMARY";
         const isFk = col.CONSTRAINT_NAME !== null && col.CONSTRAINT_NAME !== "PRIMARY";
-        if (!isId) {
-            if (isFk) {
-                const select = document.createElement("select");
-                select.classList.add("form-select", "formInput");
-                select.name = col.COLUMN_NAME;
-                const option = document.createElement("option");
-                option.disabled = true;
-                option.selected = true;
-                option.textContent = `Select ${col.REFERENCED_TABLE_NAME}`;
-                option.value = "";
-                select.appendChild(option);
-                fetch(`/admin?entity=${col.REFERENCED_TABLE_NAME}`)
-                    .then((response) => response.json())
-                    .then((data) => {
-                        if (data) {
-                            data.forEach((optionData) => {
-                                const option = document.createElement("option");
-                                option.value = optionData.id;
-                                option.textContent = optionData.name;
-                                select.appendChild(option);
-                            });
-                        }
-                    });
-                td.appendChild(select);
+        if (isPk) {
+            td.innerHTML = "🔑";
+        } else if (isFk) {
+            const select = document.createElement("select");
+            select.classList.add("form-select", "formInput");
+            select.name = col.COLUMN_NAME;
+            const option = document.createElement("option");
+            option.disabled = true;
+            option.selected = true;
+            option.textContent = `Select ${col.REFERENCED_TABLE_NAME}`;
+            option.value = "";
+            select.appendChild(option);
+            fetch(`/admin?entity=${col.REFERENCED_TABLE_NAME}`)
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data) {
+                        data.forEach((optionData) => {
+                            const option = document.createElement("option");
+                            option.value = optionData.id;
+                            option.textContent = optionData.name;
+                            select.appendChild(option);
+                        });
+                    }
+                });
+            td.appendChild(select);
+        } else {
+            let input = document.createElement("input");
+            if (col.DATA_TYPE.startsWith("int") || col.DATA_TYPE.startsWith("decimal")) {
+                input.classList.add("form-control", "formInput");
+                input.type = "number";
+            } else if (col.DATA_TYPE === "date" || col.DATA_TYPE === "datetime") {
+                input.classList.add("form-control", "formInput");
+                input.type = col.DATA_TYPE;
+            } else if (col.DATA_TYPE === "tinyint") {
+                input.classList.add("form-check-input", "formInput");
+                input.type = "checkbox";
+                input.value = 0;
+                input.addEventListener('change', (e) => { e.target.value = e.target.checked ? 1 : 0 });
             } else {
-                let input = document.createElement("input");
-                if (col.DATA_TYPE.startsWith("int") || col.DATA_TYPE.startsWith("decimal")) {
-                    input.classList.add("form-control", "formInput");
-                    input.type = "number";
-                } else if (col.DATA_TYPE === "date" || col.DATA_TYPE === "datetime") {
-                    input.classList.add("form-control", "formInput");
-                    input.type = col.DATA_TYPE;
-                } else if (col.DATA_TYPE === "tinyint") {
-                    input.classList.add("form-check-input", "formInput");
-                    input.type = "checkbox";
-                    input.value = 0;
-                    input.addEventListener('change', (e) => { e.target.value = e.target.checked ? 1 : 0 });
-                } else {
-                    input.classList.add("form-control", "formInput");
-                    input.type = "text";
-                }
-                input.placeholder = col.COLUMN_NAME;
-                input.name = col.COLUMN_NAME;
-                if (col.IS_NULLABLE !== "YES") {
-                    input.required = true;
-                }
-                td.appendChild(input);
+                input.classList.add("form-control", "formInput");
+                input.type = "text";
             }
+            input.placeholder = col.COLUMN_NAME;
+            input.name = col.COLUMN_NAME;
+            if (col.IS_NULLABLE !== "YES") {
+                input.required = true;
+            }
+            td.appendChild(input);
         }
         trFooter.appendChild(td);
     });
