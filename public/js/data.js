@@ -143,8 +143,8 @@ function createTFoot(columns) {
                 } else if (col.DATA_TYPE === "tinyint") {
                     input.classList.add("form-check-input", "formInput");
                     input.type = "checkbox";
-                    input.value = 1;
-                    input.checked = false;
+                    input.value = 0;
+                    input.addEventListener('change', (e) => { e.target.value = e.target.checked ? 1 : 0 });
                 } else {
                     input.classList.add("form-control", "formInput");
                     input.type = "text";
