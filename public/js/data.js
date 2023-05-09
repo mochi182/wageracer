@@ -20,6 +20,23 @@ window.onload = function () {
     selectChange();
 };
 
+// Checkbox that toggles fields for editing
+const makeEditableCheckbox = document.querySelector("#makeEditable");
+makeEditableCheckbox.addEventListener("change", (event) => {
+    const formElements = document.querySelectorAll(".editInput");
+    if (event.target.checked) {
+        formElements.forEach((element) => {
+            element.classList.add("editable");
+            element.removeAttribute("disabled");
+        });
+    } else {
+        formElements.forEach((element) => {
+            element.classList.remove("editable");
+            element.setAttribute("disabled", "true");
+        });
+    }
+});
+
 const entitySelect = document.querySelector('#entity-select');
 entitySelect.addEventListener('change', selectChange);
 
@@ -90,42 +107,100 @@ function createTBody(columns, rows) {
     if (rows.length > 0) {
         rows.forEach((row) => {
             const tr = document.createElement("tr");
+
             columns.forEach((col) => {
                 const td = document.createElement("td");
-                td.textContent = row[col.COLUMN_NAME];
+                const isPk = col.CONSTRAINT_NAME === "PRIMARY";
+                const isFk = col.CONSTRAINT_NAME !== null && col.CONSTRAINT_NAME !== "PRIMARY";
+                if (isPk) {
+                    td.textContent = row[col.COLUMN_NAME];
+                } else if (isFk) {
+                    const select = document.createElement("select");
+                    select.classList.add("form-select", "editInput");
+                    select.name = col.COLUMN_NAME;
+                    fetch(`/admin?entity=${col.REFERENCED_TABLE_NAME}`)
+                        .then((response) => response.json())
+                        .then((data) => {
+                            if (data) {
+                                data.forEach((optionData) => {
+                                    const option = document.createElement("option");
+                                    option.value = optionData.id;
+                                    option.textContent = optionData.name;
+                                    if (optionData.id == row[col.COLUMN_NAME]) {
+                                        option.selected = true;
+                                    }
+                                    select.appendChild(option);
+                                });
+                            }
+                        });
+
+                    // If #makeEditable checkbox is not checked, disable the select
+                    if (!(document.querySelector("#makeEditable").checked)) {
+                        select.disabled = true;
+                    }
+
+                    // Event that triggers the edit
+                    select.addEventListener('change', (e) => {
+                        sendEditChange(e, row["id"], entity);
+                    });
+                    td.appendChild(select);
+                } else {
+                    var input;
+                    if (col.DATA_TYPE.startsWith("varchar")) {
+                        if (col.CHARACTER_MAXIMUM_LENGTH && parseInt(col.CHARACTER_MAXIMUM_LENGTH) > 30) {
+                            input = document.createElement("textarea");
+                            input.classList.add("form-control", "editInput");
+                        } else {
+                            input = document.createElement("input");
+                            input.type = "text";
+                        }
+                        input.classList.add("form-control", "editInput");
+                    } else if (col.DATA_TYPE.startsWith("int") || col.DATA_TYPE.startsWith("decimal")) {
+                        input = document.createElement("input");
+                        input.classList.add("form-control", "editInput");
+                        input.type = "number";
+                    } else if (col.DATA_TYPE === "date" || col.DATA_TYPE === "datetime") {
+                        input = document.createElement("input");
+                        input.classList.add("form-control", "editInput");
+                        input.type = col.DATA_TYPE;
+                    } else if (col.DATA_TYPE === "tinyint") {
+                        input = document.createElement("input");
+                        input.classList.add("form-check-input", "editInput");
+                        input.type = "checkbox";
+                        input.addEventListener('change', (e) => { e.target.value = e.target.checked ? 1 : 0 });
+                    }
+
+                    input.value = row[col.COLUMN_NAME];
+                    input.placeholder = col.COLUMN_NAME;
+                    input.name = col.COLUMN_NAME;
+                    if (col.IS_NULLABLE !== "YES") {
+                        input.required = true;
+                    }
+
+                    // If #makeEditable checkbox is not checked, disable the input
+                    if (!(document.querySelector("#makeEditable").checked)) {
+                        input.disabled = true;
+                    }
+
+                    // Event that triggers the edit
+                    input.addEventListener('change', (e) => {
+                        sendEditChange(e, row["id"], entity);
+                    });
+
+                    td.appendChild(input);
+                }
+
                 tr.appendChild(td);
             });
 
-            // Create the delete button
-            const deleteBtn = document.createElement("button");
-            deleteBtn.classList.add("badge", "btn", "btn-danger");
-            deleteBtn.textContent = "🗑️";
-            deleteBtn.addEventListener("click", async () => {
-                const id = row["id"];
-                const confirmDelete = confirm("Are you sure you want to delete this row?");
-                if (confirmDelete) {
-                    try {
-                        const deleteResponse = await fetch(`/admin/${id}?entity=${entity}`, {
-                            method: "DELETE",
-                            headers: { "Content-Type": "application/json" }
-                        });
-                        if (deleteResponse.ok) {
-                            console.log(data);
-                            window.location.href = window.location.pathname + `?entity=${entity}`
-                        } else {
-                            console.log(`Error: ${deleteResponse.status}`);
-                        }
-                    } catch (err) {
-                        console.log(err);
-                    }
-                }
-            });
+            const deleteBtn = createDeleteBtn(row["id"], entity);
             const tdDelete = document.createElement("td");
             tdDelete.appendChild(deleteBtn);
             tr.appendChild(tdDelete);
-
             tbody.appendChild(tr);
         });
+
+
     } else {
         // Create a single empty row if there are no rows
         const tr = document.createElement("tr");
@@ -135,12 +210,14 @@ function createTBody(columns, rows) {
         tr.appendChild(td);
         tbody.appendChild(tr);
     }
+
     return tbody;
 }
 
 function createTFoot(columns) {
     // Create tfoot
     const tfoot = document.createElement("tfoot");
+    tfoot.classList.add("tfoot-success");
     const trFooter = document.createElement("tr");
     columns.forEach((col) => {
         const td = document.createElement("td");
@@ -150,7 +227,7 @@ function createTFoot(columns) {
             td.innerHTML = "🔑";
         } else if (isFk) {
             const select = document.createElement("select");
-            select.classList.add("form-select", "formInput");
+            select.classList.add("form-select", "createInput");
             select.name = col.COLUMN_NAME;
             const option = document.createElement("option");
             option.disabled = true;
@@ -176,27 +253,27 @@ function createTFoot(columns) {
             if (col.DATA_TYPE.startsWith("varchar")) {
                 if (col.CHARACTER_MAXIMUM_LENGTH && parseInt(col.CHARACTER_MAXIMUM_LENGTH) > 30) {
                     input = document.createElement("textarea");
-                    input.classList.add("form-control", "formInput");
+                    input.classList.add("form-control", "createInput");
                 } else {
                     input = document.createElement("input");
                     input.type = "text";
                 }
-                input.classList.add("form-control", "formInput");
-            }  else if (col.DATA_TYPE.startsWith("int") || col.DATA_TYPE.startsWith("decimal")) {
+                input.classList.add("form-control", "createInput");
+            } else if (col.DATA_TYPE.startsWith("int") || col.DATA_TYPE.startsWith("decimal")) {
                 input = document.createElement("input");
-                input.classList.add("form-control", "formInput");
+                input.classList.add("form-control", "createInput");
                 input.type = "number";
             } else if (col.DATA_TYPE === "date" || col.DATA_TYPE === "datetime") {
                 input = document.createElement("input");
-                input.classList.add("form-control", "formInput");
+                input.classList.add("form-control", "createInput");
                 input.type = col.DATA_TYPE;
             } else if (col.DATA_TYPE === "tinyint") {
                 input = document.createElement("input");
-                input.classList.add("form-check-input", "formInput");
+                input.classList.add("form-check-input", "createInput");
                 input.type = "checkbox";
                 input.value = 0;
                 input.addEventListener('change', (e) => { e.target.value = e.target.checked ? 1 : 0 });
-            } 
+            }
 
             input.placeholder = col.COLUMN_NAME;
             input.name = col.COLUMN_NAME;
@@ -215,16 +292,62 @@ function createTFoot(columns) {
     return tfoot;
 }
 
+function sendEditChange(e, id, entity) {
+    const formData = { [e.target.name]: e.target.value };
+    const url = `/admin/${id}?entity=${entity}`;
+
+    fetch(url, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData)
+    }).then(response => {
+        if (response.ok) {
+            //window.location.href = window.location.pathname + `?entity=${entity}`;
+        } else {
+            console.log(`Error: ${response.status} - ${response.statusText}`);
+        }
+    }).catch(error => {
+        console.log(error);
+    });
+}
+
+function createDeleteBtn(id, entity) {
+    // Create the delete button
+    const deleteBtn = document.createElement("button");
+    deleteBtn.classList.add("badge", "btn", "btn-danger");
+    deleteBtn.textContent = "🗑️";
+    deleteBtn.addEventListener("click", async () => {
+        const confirmDelete = confirm("Are you sure you want to delete this row?");
+        if (confirmDelete) {
+            try {
+                const deleteResponse = await fetch(`/admin/${id}?entity=${entity}`, {
+                    method: "DELETE",
+                    headers: { "Content-Type": "application/json" }
+                });
+                if (deleteResponse.ok) {
+                    console.log(data);
+                    window.location.href = window.location.pathname + `?entity=${entity}`
+                } else {
+                    console.log(`Error: ${deleteResponse.status}`);
+                }
+            } catch (err) {
+                console.log(err);
+            }
+        }
+    });
+    return deleteBtn;
+}
+
 const createEntityButton = document.getElementById("create-entity-button");
 createEntityButton.addEventListener("click", sendData);
 
 function sendData() {
     const entitySelect = document.getElementById("entity-select");
     const entity = entitySelect.value;
-    const formInputs = document.querySelectorAll(".formInput");
+    const createInputs = document.querySelectorAll(".createInput");
     const formData = new FormData();
 
-    formInputs.forEach((input) => {
+    createInputs.forEach((input) => {
         const name = input.getAttribute("name");
         const value = input.value;
         if (value) {

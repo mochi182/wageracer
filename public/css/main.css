@@ -31,3 +31,11 @@ footer {
     background-color: #212529 !important;
     text-align: center;
 }
+
+.createInput {
+    border: 1px solid blue !important;
+}
+
+.editInput {
+    border: 1px solid green !important;
+}

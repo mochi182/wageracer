@@ -61,6 +61,21 @@ exports.getColumns = async function (req) {
     }
 };
 
+exports.update = async function (req) {
+    try {
+        const entity = req.query.entity;
+        const id = req.params.id;
+        const formData = req.body;
+        const updates = Object.entries(formData).map(([key, value]) => `${key}='${value}'`).join(", ");
+        const query = `UPDATE ${entity} SET ${updates} WHERE id=${id}`;
+        const result = await client.promise().query(query);
+        return result[0];
+    } catch (err) {
+        console.log(err);
+        throw err;
+    }
+};
+
 exports.delete = async function (req) {
     try {
       const entity = req.query.entity;

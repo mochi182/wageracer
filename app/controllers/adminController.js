@@ -32,7 +32,8 @@ exports.getColumns = async function (req, res) {
 
 exports.update = async function (req, res) {
     try {
-        res.json({admin: await model.update()})
+        await model.update(req);
+        res.sendStatus(200);
     } catch (err) {
         console.log(err);
         res.sendStatus(500);
