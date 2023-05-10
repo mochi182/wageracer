@@ -46,3 +46,39 @@ table {
     box-shadow: 1px 1px 5px rgba(55, 216, 22, 0.15);
     border: 1px solid rgba(55, 216, 22, 0.5) !important;
 }
+
+.td-paragraph-info {
+    margin: 5px;
+    padding: 5px 5px 10px 5px;
+    border-radius: 10px;
+    background-color: #c3e1ff !important;
+}
+
+/* Star rating */
+
+.starRating::after {
+    font-size: 20px;
+    color: #f2b01e;
+    text-shadow: 1px 1px #ccc;
+  }
+  
+  .starRating[data-rating="1"]::after {
+    content: "\2605\2606\2606\2606\2606";
+  }
+  
+  .starRating[data-rating="2"]::after {
+    content: "\2605\2605\2606\2606\2606";
+  }
+  
+  .starRating[data-rating="3"]::after {
+    content: "\2605\2605\2605\2606\2606";
+  }
+  
+  .starRating[data-rating="4"]::after {
+    content: "\2605\2605\2605\2605\2606";
+  }
+  
+  .starRating[data-rating="5"]::after {
+    content: "\2605\2605\2605\2605\2605";
+  }
+  

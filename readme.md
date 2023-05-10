@@ -33,7 +33,7 @@
 
 # 🌊 WageRacer
 
-This is an application designed to help track job applications and other relevant information for job seekers. The app allows users to keep track of job applications, including the company, job position, and domain, as well as contacts at these companies and any reviews or responses received.
+This is an application designed to help me track job applications and other relevant information for job seekers. The app allows users to keep track of job applications, including the company, job position, and domain, as well as contacts at these companies and any reviews or responses received.
 
 ## 🚀 Technologies Used
 

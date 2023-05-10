@@ -9,11 +9,12 @@
 <main class="p-4">
     <h3>Companies</h3>
 
-    <table class="table table-striped">
+    <table class="table table-sm table-bordered">
         <thead>
             <tr>
                 <th>Id</th>
                 <th>Name</th>
+                <th>Size</th>
                 <th>Website</th>
                 <th>Reviews</th>
                 <th>Contacts</th>
@@ -29,25 +30,35 @@
                         <%= company.name %>
                     </td>
                     <td>
-                        <%= company.website_name %>
+                        <%= company.size %>
                     </td>
                     <td>
-                        <ul>
-                            <% company.reviews.forEach(function(review) { %>
-                                <li>
-                                    <%= review.rating %>, <%= review.description %>
-                                </li>
-                                <% }); %>
-                        </ul>
+                        <a href="https://<%= company.link %>"><%= company.link %></a>
                     </td>
                     <td>
-                        <ul>
-                            <% company.contacts.forEach(function(contact) { %>
-                                <li>
-                                    <%= contact.name %>, <%= contact.phone %>
-                                </li>
-                                <% }); %>
-                        </ul>
+                        <% company.reviews.forEach(function(review) { %>
+                          <div class="td-paragraph-info">
+                            <p class="m-0 p-0 starRating" data-rating="<%= review.rating %>"></p>
+                            <p class="m-0 p-0">
+                              <%= review.description %>
+                            </p>
+                            <p class="m-0 p-0">
+                              <a class="badge btn btn-outline-info" href="<%= review.link %>">🔗</a>
+                            </p>
+                          </div>
+                        <% }); %>
+                      </td>
+                    <td>
+                        <% company.contacts.forEach(function(contact) { %>
+                            <p class="bg-gradient-secondary">
+                                <p class="m-0 p-0">
+                                    <%= contact.name %>
+                                </p>
+                                <p class="m-0 p-0">
+                                    <a class="badge btn btn-outline-info" href="<%= contact.link %>">🔗</a>
+                                </p>
+                            </p>
+                        <% }); %>
                     </td>
                 </tr>
                 <% }); %>

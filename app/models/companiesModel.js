@@ -5,11 +5,7 @@ let client = require('./db.js');
 exports.readAll = async function (req) {
     try {
       // Select all companies along with their website name
-      const companiesQuery = `
-        SELECT c.*, w.name AS website_name 
-        FROM company AS c 
-        LEFT JOIN website AS w ON c.website_id = w.id
-      `;
+      const companiesQuery = `SELECT * FROM COMPANY`;
       const companiesResult = await client.promise().query(companiesQuery);
       const companies = companiesResult[0];
   
