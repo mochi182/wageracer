@@ -13,3 +13,6 @@ main {flex-grow: 1;}
 header {}
 footer {}
 Donde body es el padre de header, main y footer (en ese orden).
+
+Check constraint da problemas con Phpmyadmin (?):
+https://stackoverflow.com/questions/2115497/check-constraint-in-mysql-is-not-working
