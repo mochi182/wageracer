@@ -4,9 +4,9 @@ application
 id (int, primary key, autoincrement)
 job_position_id (int, foreign key points to id column of table position)
 domain_id (int, foreign key points to id column of table domain)
-found_in (int, foreign key points to id column of table website)
 country_id (int, foreign key points to id column of table country)
 is_remote (boolean)
+link (varchar 300)
 
 application_vs_status
 application_id (int, foreign key points to id column of table application)
@@ -17,7 +17,8 @@ both application_id and status_id are a single primary key
 
 status:
 id (int, primary key, autoincrement)
-name (varchar 8, 3 possible values: "Applied", "Rejected", "Interview", "Accepted")
+name (varchar 10)
+{insert 4 values: "Applied", "Rejected", "Interview", "Accepted"}
 
 domain:
 id (int, primary key, autoincrement)
@@ -31,25 +32,26 @@ name (varchar 30)
 company:
 id (int, primary key, autoincrement)
 name (varchar 30)
-size (varchar 8, 3 values: "Startup", "Medium", "Big", "FAANG")
-website_id (int, foreign key points to id column of table website)
+size (varchar 8)
+link (varchar 300)
 
 company_review:
 id (int, primary key, autoincrement)
 rating (int 1, range from 1 to 5)
 description (varchar 100)
+link (varchar 300)
 company_id (int, foreign key points to id column of table company)
 
 contact:
 id (int, primary key, autoincrement)
 name (varchar 30)
-phone (int)
+link (varchar 300)
 company_id (int, foreign key points to id column of table company)
 
-website:
+telephone:
 id (int, primary key, autoincrement)
-name (varchar 50)
-job_platform (boolean, defaults to 0)
+contact_id (int, foreign key points to id column of table contact)
+number (int)
 
 country:
 id (int, primary key, autoincrement)

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 08-05-2023 a las 04:32:21
+-- Tiempo de generación: 10-05-2023 a las 03:01:51
 -- Versión del servidor: 10.4.27-MariaDB
 -- Versión de PHP: 8.0.25
 
@@ -31,9 +31,9 @@ CREATE TABLE `application` (
   `id` int(11) NOT NULL,
   `job_position_id` int(11) DEFAULT NULL,
   `domain_id` int(11) DEFAULT NULL,
-  `found_in` int(11) DEFAULT NULL,
   `country_id` int(11) DEFAULT NULL,
-  `is_remote` tinyint(1) DEFAULT NULL
+  `is_remote` tinyint(1) DEFAULT NULL,
+  `link` varchar(300) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -58,8 +58,8 @@ CREATE TABLE `application_vs_status` (
 CREATE TABLE `company` (
   `id` int(11) NOT NULL,
   `name` varchar(30) DEFAULT NULL,
-  `size` varchar(8) DEFAULT NULL CHECK (`size` in ('Startup','Medium','Big','FAANG')),
-  `website_id` int(11) DEFAULT NULL
+  `size` varchar(8) DEFAULT NULL,
+  `link` varchar(300) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -70,8 +70,9 @@ CREATE TABLE `company` (
 
 CREATE TABLE `company_review` (
   `id` int(11) NOT NULL,
-  `rating` int(11) DEFAULT NULL CHECK (`rating` >= 1 and `rating` <= 5),
+  `rating` int(11) DEFAULT NULL CHECK (`rating` between 1 and 5),
   `description` varchar(100) DEFAULT NULL,
+  `link` varchar(300) DEFAULT NULL,
   `company_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -84,7 +85,7 @@ CREATE TABLE `company_review` (
 CREATE TABLE `contact` (
   `id` int(11) NOT NULL,
   `name` varchar(30) DEFAULT NULL,
-  `phone` int(11) DEFAULT NULL,
+  `link` varchar(300) DEFAULT NULL,
   `company_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -159,19 +160,29 @@ CREATE TABLE `project_vs_company` (
 
 CREATE TABLE `status` (
   `id` int(11) NOT NULL,
-  `name` varchar(8) DEFAULT NULL CHECK (`name` in ('Applied','Rejected','Interview','Accepted'))
+  `name` varchar(10) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `status`
+--
+
+INSERT INTO `status` (`id`, `name`) VALUES
+(1, 'Applied'),
+(2, 'Rejected'),
+(3, 'Interview'),
+(4, 'Accepted');
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `website`
+-- Estructura de tabla para la tabla `telephone`
 --
 
-CREATE TABLE `website` (
+CREATE TABLE `telephone` (
   `id` int(11) NOT NULL,
-  `name` varchar(50) DEFAULT NULL,
-  `job_platform` tinyint(1) DEFAULT 0
+  `contact_id` int(11) DEFAULT NULL,
+  `number` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -183,10 +194,9 @@ CREATE TABLE `website` (
 --
 ALTER TABLE `application`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `FK_application_domain_id` (`domain_id`),
-  ADD KEY `FK_application_found_in` (`found_in`),
-  ADD KEY `FK_application_country_id` (`country_id`),
-  ADD KEY `FK_application_job_position_id` (`job_position_id`);
+  ADD KEY `job_position_id` (`job_position_id`),
+  ADD KEY `domain_id` (`domain_id`),
+  ADD KEY `country_id` (`country_id`);
 
 --
 -- Indices de la tabla `application_vs_status`
@@ -199,8 +209,7 @@ ALTER TABLE `application_vs_status`
 -- Indices de la tabla `company`
 --
 ALTER TABLE `company`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `website_id` (`website_id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indices de la tabla `company_review`
@@ -255,10 +264,11 @@ ALTER TABLE `status`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indices de la tabla `website`
+-- Indices de la tabla `telephone`
 --
-ALTER TABLE `website`
-  ADD PRIMARY KEY (`id`);
+ALTER TABLE `telephone`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `contact_id` (`contact_id`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
@@ -310,12 +320,12 @@ ALTER TABLE `job_position`
 -- AUTO_INCREMENT de la tabla `status`
 --
 ALTER TABLE `status`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT de la tabla `website`
+-- AUTO_INCREMENT de la tabla `telephone`
 --
-ALTER TABLE `website`
+ALTER TABLE `telephone`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
@@ -326,10 +336,9 @@ ALTER TABLE `website`
 -- Filtros para la tabla `application`
 --
 ALTER TABLE `application`
-  ADD CONSTRAINT `FK_application_country_id` FOREIGN KEY (`country_id`) REFERENCES `country` (`id`),
-  ADD CONSTRAINT `FK_application_domain_id` FOREIGN KEY (`domain_id`) REFERENCES `domain` (`id`),
-  ADD CONSTRAINT `FK_application_found_in` FOREIGN KEY (`found_in`) REFERENCES `website` (`id`),
-  ADD CONSTRAINT `FK_application_job_position_id` FOREIGN KEY (`job_position_id`) REFERENCES `job_position` (`id`);
+  ADD CONSTRAINT `application_ibfk_1` FOREIGN KEY (`job_position_id`) REFERENCES `job_position` (`id`),
+  ADD CONSTRAINT `application_ibfk_2` FOREIGN KEY (`domain_id`) REFERENCES `domain` (`id`),
+  ADD CONSTRAINT `application_ibfk_3` FOREIGN KEY (`country_id`) REFERENCES `country` (`id`);
 
 --
 -- Filtros para la tabla `application_vs_status`
@@ -337,12 +346,6 @@ ALTER TABLE `application`
 ALTER TABLE `application_vs_status`
   ADD CONSTRAINT `application_vs_status_ibfk_1` FOREIGN KEY (`application_id`) REFERENCES `application` (`id`),
   ADD CONSTRAINT `application_vs_status_ibfk_2` FOREIGN KEY (`status_id`) REFERENCES `status` (`id`);
-
---
--- Filtros para la tabla `company`
---
-ALTER TABLE `company`
-  ADD CONSTRAINT `company_ibfk_1` FOREIGN KEY (`website_id`) REFERENCES `website` (`id`);
 
 --
 -- Filtros para la tabla `company_review`
@@ -368,6 +371,12 @@ ALTER TABLE `job_position`
 ALTER TABLE `project_vs_company`
   ADD CONSTRAINT `project_vs_company_ibfk_1` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`),
   ADD CONSTRAINT `project_vs_company_ibfk_2` FOREIGN KEY (`company_id`) REFERENCES `company` (`id`);
+
+--
+-- Filtros para la tabla `telephone`
+--
+ALTER TABLE `telephone`
+  ADD CONSTRAINT `telephone_ibfk_1` FOREIGN KEY (`contact_id`) REFERENCES `contact` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
