@@ -2,10 +2,12 @@ wageracer <<<<<
 
 application
 id (int, primary key, autoincrement)
-job_position_id (int, foreign key points to id column of table position)
+name (varchar 200)
+company_id (int, foreign key points to id column of table company)
 domain_id (int, foreign key points to id column of table domain)
-country_id (int, foreign key points to id column of table country)
+description (varchar 500)
 is_remote (boolean)
+country_id (int, foreign key points to id column of table country)
 link (varchar 300)
 
 application_vs_status

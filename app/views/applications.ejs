@@ -12,32 +12,41 @@
             <thead>
                 <tr>
                     <th>Id</th>
+                    <th>Company</th>
                     <th>Job position</th>
                     <th>Domain</th>
-                    <th>Found In</th>
                     <th>Country</th>
                     <th>Is remote?</th>
                     <th>Status</th>
                     <th>Date</th>
                     <th>Next date</th>
+                    <th>Link</th>
                 </tr>
             </thead>
             <tbody>
                 <% applications.forEach(function(app) { %>
                     <tr>
-                        <td><a href="/application/<%= app.application_id %>"><%= app.application_id %></a></td>
-                        <td><%= app.job_position_name %></td>
+                        <td><%= app.id %></td>
+                        <td><%= app.company_name %></td>
+                        <td><%= app.job_position %></td>
                         <td><%= app.domain_name %></td>
-                        <td><%= app.website_name %></td>
                         <td><%= app.country_name %></td>
                         <td><%= app.is_remote ? 'Yes' : 'No' %></td>
-                        <td><%= app.status_name %></td>
-                        <td><%= app.date %></td>
-                        <td><%= app.next_date ? app.next_date : '' %></td>
+                        <td>
+                            <span class="badge btn <%= app.status_name === 'Rejected' ? 'btn-danger' : (app.status_name === 'Accepted' ? 'btn-success' : 'btn-info') %>">
+                                <%= app.status_name %>
+                            </span>
+                        </td>
+                        <td><%= (new Date(app.date)).toLocaleDateString('en-GB') %></td>
+                        <td><%= app.next_date ? (new Date(app.next_date)).toLocaleDateString('en-GB') : '' %></td>
+                        <td>
+                            <a class="badge btn btn-outline-info" href="<%= app.link %>">🔗</a>
+                        </td>
                     </tr>
                 <% }); %>
             </tbody>
         </table>
+        
     </main>
 
     <%- include('footer'); %>
