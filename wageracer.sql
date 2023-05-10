@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 10-05-2023 a las 03:01:51
+-- Tiempo de generación: 10-05-2023 a las 04:55:18
 -- Versión del servidor: 10.4.27-MariaDB
 -- Versión de PHP: 8.0.25
 
@@ -29,10 +29,12 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `application` (
   `id` int(11) NOT NULL,
-  `job_position_id` int(11) DEFAULT NULL,
+  `name` varchar(200) DEFAULT NULL,
+  `company_id` int(11) DEFAULT NULL,
   `domain_id` int(11) DEFAULT NULL,
-  `country_id` int(11) DEFAULT NULL,
+  `description` varchar(500) DEFAULT NULL,
   `is_remote` tinyint(1) DEFAULT NULL,
+  `country_id` int(11) DEFAULT NULL,
   `link` varchar(300) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -194,7 +196,7 @@ CREATE TABLE `telephone` (
 --
 ALTER TABLE `application`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `job_position_id` (`job_position_id`),
+  ADD KEY `company_id` (`company_id`),
   ADD KEY `domain_id` (`domain_id`),
   ADD KEY `country_id` (`country_id`);
 
@@ -336,7 +338,7 @@ ALTER TABLE `telephone`
 -- Filtros para la tabla `application`
 --
 ALTER TABLE `application`
-  ADD CONSTRAINT `application_ibfk_1` FOREIGN KEY (`job_position_id`) REFERENCES `job_position` (`id`),
+  ADD CONSTRAINT `application_ibfk_1` FOREIGN KEY (`company_id`) REFERENCES `company` (`id`),
   ADD CONSTRAINT `application_ibfk_2` FOREIGN KEY (`domain_id`) REFERENCES `domain` (`id`),
   ADD CONSTRAINT `application_ibfk_3` FOREIGN KEY (`country_id`) REFERENCES `country` (`id`);
 
